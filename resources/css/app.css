@@ -1,0 +1,13 @@
+@import "./navigation.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Custom styles */
+@layer components {
+    /* Add custom component styles here */
+}
+
+@layer utilities {
+    /* Add custom utility styles here */
+}
+

@@ -1,0 +1,1 @@
+<a href="{{ url('/') }}" aria-hidden="true"></a>
