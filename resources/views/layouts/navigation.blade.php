@@ -1,5 +1,5 @@
  <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -126,6 +126,54 @@
         font-size: 2.2rem;
       }
     }
+
+    /* Auth controls */
+    .auth-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    .auth-name {
+      opacity: 0.9;
+      font-weight: 600;
+    }
+
+    .auth-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn-auth {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.7);
+      background: transparent;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-auth-primary {
+      background: #22c55e;
+      border-color: #4ade80;
+    }
+
+    .btn-auth:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .btn-auth-primary:hover {
+      background: #16a34a;
+    }
   </style>
 </head>
 <body>
@@ -133,21 +181,44 @@
   <nav class="navbar-modern">
     <div class="container">
       <div class="nav-content">
-        <!-- العنوان في الوسط -->
+        <!-- Titre au centre -->
         <a href="/recipes" class="logo-title text-decoration-none">
           <h1>Plateforme de partage de recettes</h1>
-          <p class="slogan">شاركوا أشهى وصفاتكم مع العالم 🍳✨</p>
+          <p class="slogan">Partagez vos meilleures recettes avec le monde 🍳✨</p>
         </a>
 
-        <!-- زر الإضافة -->
-        <a href="/recipes/create" class="btn-add-recipe">
-          <span>+</span> إضافة وصفة جديدة
-        </a>
+        <!-- Zone utilisateur + bouton d'ajout (à droite) -->
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div class="auth-controls">
+            @auth
+              <div class="auth-name">
+                Bonjour, {{ Auth::user()->name ?? 'chef' }}
+              </div>
+              <div class="auth-actions">
+                <form method="POST" action="{{ route('logout') }}">
+                  @csrf
+                  <button type="submit" class="btn-auth">
+                    Se déconnecter
+                  </button>
+                </form>
+              </div>
+            @else
+              <div class="auth-actions">
+                <a href="{{ route('login') }}" class="btn-auth">Connexion</a>
+                <a href="{{ route('register') }}" class="btn-auth btn-auth-primary">Créer un compte</a>
+              </div>
+            @endauth
+          </div>
+
+          @auth
+            <a href="{{ route('recipes.create') }}" class="btn-add-recipe">
+              <span>+</span> Ajouter une nouvelle recette
+            </a>
+          @endauth
+        </div>
       </div>
     </div>
   </nav>
-
-  <!-- باقي محتوى الصفحة هنا -->
   
 </body>
 </html>

@@ -17,6 +17,13 @@
         <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
         
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            @php
+                $chef = $recipe->user;
+                $chefPhoto = $chef && $chef->profile_photo_path
+                    ? asset('storage/' . $chef->profile_photo_path)
+                    : null;
+                $chefInitial = $chef ? strtoupper(mb_substr($chef->name, 0, 1, 'UTF-8')) : '?';
+            @endphp
             <!-- Navigation -->
             <div class="flex items-center justify-end mb-10">
                 @if($recipe->user_id === Auth::id())
@@ -57,16 +64,20 @@
                                 </div>
                             </div>
                             <div class="flex flex-col items-center mb-6">
-                                <div class="w-24 h-24 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-2xl mb-5 ring-4 ring-white/30 group-hover:ring-white/50 group-hover:scale-110 transition-all duration-500">
-                                    {{ $recipe->user ? strtoupper(substr($recipe->user->name, 0, 1)) : '?' }}
+                                <div class="w-24 h-24 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-2xl mb-5 ring-4 ring-white/30 group-hover:ring-white/50 group-hover:scale-110 transition-all duration-500 overflow-hidden">
+                                    @if($chefPhoto)
+                                        <img src="{{ $chefPhoto }}" alt="{{ $chef->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ $chefInitial }}
+                                    @endif
                                 </div>
-                                <h3 class="font-black text-gray-900 text-2xl mb-2 text-center">{{ $recipe->user ? $recipe->user->name : 'Utilisateur inconnu' }}</h3>
+                                <h3 class="font-black text-gray-900 text-2xl mb-2 text-center">{{ $chef ? $chef->name : 'Utilisateur inconnu' }}</h3>
                                 <p class="text-gray-600 font-bold text-sm text-center">Chef cuisinier professionnel</p>
                             </div>
                             <div class="pt-6 border-t-2 border-gray-200">
                                 <div class="flex items-center justify-between p-5 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 rounded-2xl border-2 border-orange-100">
                                     <span class="text-gray-700 font-bold text-sm">Recettes publiées</span>
-                                    <span class="font-black text-orange-600 text-3xl">{{ $recipe->user ? $recipe->user->recipes()->count() : 0 }}</span>
+                                    <span class="font-black text-orange-600 text-3xl">{{ $chef ? $chef->recipes()->count() : 0 }}</span>
                                 </div>
                             </div>
                         </div>
@@ -87,28 +98,36 @@
                                 </div>
                             </div>
                             <div class="flex flex-col items-center mb-6">
-                                <div class="w-24 h-24 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-2xl mb-5 ring-4 ring-white/30 group-hover:ring-white/50 group-hover:scale-110 transition-all duration-500">
-                                    {{ $recipe->user ? strtoupper(substr($recipe->user->name, 0, 1)) : '?' }}
+                                <div class="w-24 h-24 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-2xl mb-5 ring-4 ring-white/30 group-hover:ring-white/50 group-hover:scale-110 transition-all duration-500 overflow-hidden">
+                                    @if($chefPhoto)
+                                        <img src="{{ $chefPhoto }}" alt="{{ $chef->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ $chefInitial }}
+                                    @endif
                                 </div>
-                                <h3 class="font-black text-gray-900 text-2xl mb-2 text-center">{{ $recipe->user ? $recipe->user->name : 'Utilisateur inconnu' }}</h3>
+                                <h3 class="font-black text-gray-900 text-2xl mb-2 text-center">{{ $chef ? $chef->name : 'Utilisateur inconnu' }}</h3>
                                 <p class="text-gray-600 font-bold text-sm text-center">Chef cuisinier professionnel</p>
                             </div>
                             <div class="pt-6 border-t-2 border-gray-200">
                                 <div class="flex items-center justify-between p-5 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 rounded-2xl border-2 border-orange-100">
                                     <span class="text-gray-700 font-bold text-sm">Recettes publiées</span>
-                                    <span class="font-black text-orange-600 text-3xl">{{ $recipe->user ? $recipe->user->recipes()->count() : 0 }}</span>
+                                    <span class="font-black text-orange-600 text-3xl">{{ $chef ? $chef->recipes()->count() : 0 }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-wrap items-center justify-center gap-5">
+                    <div class="flex flex-wrap items-center justify-center gap-5">
                     <div class="flex items-center gap-4 px-6 py-4 bg-white/25 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 hover:bg-white/35 transition-all duration-300">
-                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-orange-600 font-black text-2xl shadow-2xl ring-4 ring-white/30">
-                            {{ $recipe->user ? strtoupper(substr($recipe->user->name, 0, 1)) : '?' }}
+                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-orange-600 font-black text-2xl shadow-2xl ring-4 ring-white/30 overflow-hidden">
+                            @if($chefPhoto)
+                                <img src="{{ $chefPhoto }}" alt="{{ $chef->name }}" class="w-full h-full object-cover">
+                            @else
+                                {{ $chefInitial }}
+                            @endif
                         </div>
                         <div>
-                            <p class="font-bold text-lg leading-tight">{{ $recipe->user ? $recipe->user->name : 'Utilisateur inconnu' }}</p>
+                            <p class="font-bold text-lg leading-tight">{{ $chef ? $chef->name : 'Utilisateur inconnu' }}</p>
                             <p class="text-white/80 text-sm font-medium">Chef</p>
                         </div>
                     </div>
