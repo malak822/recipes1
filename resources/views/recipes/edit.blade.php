@@ -196,7 +196,7 @@
                 <label class="form-label fw-bold">Image actuelle</label>
                 <div class="text-center mb-4">
                     @if($recipe->image)
-                        <img src="{{ asset('storage/' . $recipe->image) }}" alt="Image actuelle" class="current-img img-fluid">
+                        <img src="{{ str_starts_with($recipe->image, 'http') ? $recipe->image : asset('storage/' . $recipe->image) }}" alt="Image actuelle" class="current-img img-fluid">
                     @else
                         <p class="text-muted">Aucune image actuelle</p>
                     @endif

@@ -805,7 +805,7 @@
             @php
                 $fallback = $categoryFallbacks[$recipe->category] ?? 'plats.jpg';
                 $recipeImage = $recipe->image
-                    ? asset('storage/' . $recipe->image)
+                    ? str_starts_with($recipe->image, 'http') ? $recipe->image : asset('storage/' . $recipe->image)
                     : asset('images/' . $fallback);
                 $totalMinutes = ($recipe->prep_time ?? 0) + ($recipe->cook_time ?? 0);
                 $diffClass = match($recipe->difficulty) {
