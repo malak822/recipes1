@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\DB;
 
 class ImportRecipes extends Command
 {
-    protected $signature = 'import:recipes';
+    protected $signature = 'import:recipes {--force}';
     protected $description = 'Import recipes from JSON file';
 
     public function handle()
     {
-        DB::table('recipes')->truncate();
+        DB::statement('TRUNCATE TABLE recipes RESTART IDENTITY CASCADE');
         
         $recipes = json_decode(file_get_contents(base_path('recipes_export.json')), true);
         
