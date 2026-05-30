@@ -12,12 +12,8 @@ class ImportRecipes extends Command
 
     public function handle()
     {
-        $count = DB::table('recipes')->count();
-        if ($count > 0) {
-            $this->info('Recipes already exist, skipping import.');
-            return;
-        }
-
+        DB::table('recipes')->truncate();
+        
         $recipes = json_decode(file_get_contents(base_path('recipes_export.json')), true);
         
         foreach ($recipes as $r) {
@@ -37,6 +33,6 @@ class ImportRecipes extends Command
             ]);
         }
         
-        $this->info('Recipes imported successfully!');
+        $this->info('Recipes imported: ' . count($recipes));
     }
 }
