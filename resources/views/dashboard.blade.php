@@ -1,133 +1,171 @@
-<x-app-layout>
-    <div class="py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Welcome Card -->
-            <div class="bg-gradient-to-r from-orange-500 via-orange-600 to-red-500 rounded-3xl shadow-2xl p-10 mb-10 text-white relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
-                <div class="absolute bottom-0 left-0 w-96 h-96 bg-white opacity-5 rounded-full -ml-48 -mb-48"></div>
-                <div class="relative z-10">
-                    <h1 class="text-5xl font-black mb-4">Bienvenue, {{ Auth::user()->name }}! 👋</h1>
-                    <p class="text-2xl opacity-90 mb-8">Nous vous souhaitons une journée pleine de délicieuses recettes et de créativité!</p>
-                    <a href="{{ route('recipes.create') }}" 
-                       class="inline-flex items-center gap-3 bg-white text-orange-600 px-8 py-4 rounded-2xl font-black text-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-                        <span>➕</span> Commencer à ajouter une nouvelle recette
-                    </a>
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Recettes Gourmandes</title>
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    @include('recipes.partials.site-styles')
+    <style>
+        .dash-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+        .dash-hero {
+            background: var(--card);
+            border: 1px solid #e7e5e4;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .dash-hero h1 {
+            margin: 0 0 0.75rem;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 800;
+            color: var(--dark);
+        }
+        .dash-hero p {
+            margin: 0 auto 1.5rem;
+            max-width: 520px;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+        .dash-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+        .dash-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.25rem 1rem;
+            border-radius: 1rem;
+            border: 2px solid #e7e5e4;
+            background: #fafaf9;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .dash-card i {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        .dash-card:hover {
+            border-color: #fed7aa;
+            background: #fff7ed;
+            transform: translateY(-2px);
+        }
+        .dash-card.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .dash-card.primary i { color: #fff; }
+        .dash-card.primary:hover {
+            background: var(--accent-dark);
+            border-color: var(--accent-dark);
+        }
+        .dash-stats {
+            margin-top: 1.25rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .stat-box {
+            background: var(--card);
+            border: 1px solid #e7e5e4;
+            border-radius: 1rem;
+            padding: 1.25rem;
+        }
+        .stat-box p { margin: 0; }
+        .stat-label { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+        .stat-value { font-size: 1.75rem; font-weight: 800; color: var(--accent-dark); margin-top: 0.35rem !important; }
+        .stat-detail { font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem !important; }
+        footer {
+            background: var(--dark);
+            color: #a8a29e;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+        footer .social { margin-bottom: 0.75rem; }
+        footer .social a {
+            color: #fff;
+            font-size: 1.25rem;
+            margin: 0 0.6rem;
+            opacity: 0.7;
+            transition: opacity 0.2s, color 0.2s;
+        }
+        footer .social a:hover { opacity: 1; color: var(--accent); }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+    </style>
+</head>
+<body>
 
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <!-- Total Recipes -->
-                <div class="bg-white rounded-3xl shadow-xl p-8 border-2 border-orange-100 hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="text-6xl">📚</div>
-                        <div class="bg-gradient-to-br from-orange-500 to-red-500 text-white px-6 py-3 rounded-full font-bold text-2xl">
-                            {{ Auth::user()->recipes()->count() }}
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-black text-gray-900 mb-2">Mes Recettes</h3>
-                    <p class="text-gray-600 text-base">Total des recettes créées</p>
-                </div>
+@php
+    $user = $user ?? Auth::user();
+    $recipesCount = $user->recipes()->count();
+    $latestRecipe = $user->recipes()->latest()->first();
+@endphp
 
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-3xl shadow-xl p-8 border-2 border-blue-100 hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="text-6xl">🕒</div>
-                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white px-6 py-3 rounded-full font-bold text-sm">
-                            Actif
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-black text-gray-900 mb-2">Activité Récente</h3>
-                    <p class="text-gray-600 text-base">
-                        @if(Auth::user()->recipes()->count() > 0)
-                            Dernière recette: {{ Auth::user()->recipes()->latest()->first()->created_at->diffForHumans() }}
-                        @else
-                            Aucune activité récente
-                        @endif
-                    </p>
-                </div>
-            </div>
+@include('recipes.partials.site-header')
 
-            <!-- Quick Actions -->
-            <div class="bg-white rounded-3xl shadow-xl p-8 mb-10">
-                <h2 class="text-3xl font-black text-gray-900 mb-6">Actions Rapides 🚀</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <a href="{{ route('recipes.create') }}" 
-                       class="group flex items-center gap-6 p-6 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl hover:shadow-xl transition-all duration-300 border-2 border-orange-300 hover:border-orange-500">
-                        <div class="text-5xl group-hover:scale-125 transition-transform duration-300">➕</div>
-                        <div>
-                            <h3 class="text-2xl font-black text-orange-700 mb-1">Ajouter une nouvelle recette</h3>
-                            <p class="text-orange-600">Partagez votre recette spéciale</p>
-                        </div>
-                    </a>
+<div class="dash-wrap">
+    <section class="dash-hero">
+        <h1>Bonjour, {{ $user->name }} 👋</h1>
+        <p>Un espace qui rassemble tous les passionnés de cuisine.</p>
 
-                    <a href="{{ route('recipes.index') }}" 
-                       class="group flex items-center gap-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl hover:shadow-xl transition-all duration-300 border-2 border-blue-100 hover:border-blue-300">
-                        <div class="text-5xl group-hover:scale-125 transition-transform duration-300">🔍</div>
-                        <div>
-                            <h3 class="text-2xl font-black text-gray-900 mb-1">Parcourir les recettes</h3>
-                            <p class="text-gray-600">Découvrez de nouvelles recettes</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
+        <div class="dash-actions">
+            <a href="{{ route('recipes.create') }}" class="dash-card primary">
+                <i class="fas fa-plus-circle"></i>
+                <span>Ajouter une recette</span>
+            </a>
+            <a href="{{ route('recipes.index') }}" class="dash-card">
+                <i class="fas fa-utensils"></i>
+                <span>Choisir des recettes</span>
+            </a>
+            <a href="{{ route('about') }}" class="dash-card">
+                <i class="fas fa-heart"></i>
+                <span>À propos</span>
+            </a>
+        </div>
+    </section>
 
-            <!-- Recent Recipes -->
-            @if(Auth::user()->recipes()->count() > 0)
-            <div class="bg-white rounded-3xl shadow-xl p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-3xl font-black text-gray-900">Mes Dernières Recettes 📝</h2>
-                    <a href="{{ route('recipes.index') }}" class="text-orange-600 hover:text-orange-700 font-bold">
-                        Voir tout →
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    @foreach(Auth::user()->recipes()->latest()->take(3)->get() as $recipe)
-                        <a href="{{ route('recipes.show', $recipe) }}" 
-                           class="group bg-gradient-to-br from-gray-50 to-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-orange-300">
-                            <div class="relative h-40 bg-gradient-to-br from-orange-400 via-red-400 to-pink-500 flex items-center justify-center">
-                                <span class="text-8xl opacity-90">
-                                    @if($recipe->category == 'Dessert') 🍰
-                                    @elseif($recipe->category == 'Plat principal') 🍽️
-                                    @elseif($recipe->category == 'Entrée') 🥗
-                                    @else 🥤
-                                    @endif
-                                </span>
-                            </div>
-                            <div class="p-6">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <span class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                                        {{ $recipe->category }}
-                                    </span>
-                                    <span class="text-gray-500 text-xs flex items-center gap-1">
-                                        ⏱️ {{ $recipe->cooking_time }} min
-                                    </span>
-                                </div>
-                                <h3 class="font-black text-xl text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
-                                    {{ $recipe->title }}
-                                </h3>
-                                <p class="text-gray-600 text-sm">
-                                    {{ $recipe->created_at->diffForHumans() }}
-                                </p>
-                            </div>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
+    <section class="dash-stats">
+        <div class="stat-box">
+            <p class="stat-label">Mes recettes</p>
+            <p class="stat-value">{{ $recipesCount }}</p>
+            <p class="stat-detail">recette{{ $recipesCount > 1 ? 's' : '' }} publiée{{ $recipesCount > 1 ? 's' : '' }}</p>
+        </div>
+        <div class="stat-box">
+            <p class="stat-label">Dernière activité</p>
+            @if($latestRecipe)
+                <p class="stat-value" style="font-size:1.1rem;">{{ $latestRecipe->title }}</p>
+                <p class="stat-detail">Ajoutée {{ $latestRecipe->created_at->diffForHumans() }}</p>
             @else
-            <div class="bg-white rounded-3xl shadow-xl p-16 text-center">
-                <div class="text-9xl mb-6">🍳</div>
-                <h3 class="text-4xl font-black text-gray-900 mb-4">Vous n'avez pas encore ajouté de recette!</h3>
-                <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Commencez votre voyage de partage de délicieuses recettes avec la communauté. Ajoutez votre première recette maintenant!
-                </p>
-                <a href="{{ route('recipes.create') }}" 
-                   class="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-10 py-5 rounded-2xl hover:shadow-2xl transition-all duration-300 font-black text-xl transform hover:scale-105">
-                    <span>➕</span> Ajouter la première recette
-                </a>
-            </div>
+                <p class="stat-value" style="font-size:1.1rem;">—</p>
+                <p class="stat-detail">Ajoutez votre première recette</p>
             @endif
         </div>
+    </section>
+</div>
+
+<footer>
+    <div class="social">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
     </div>
-</x-app-layout>
+    <p>© {{ date('Y') }} Recettes Gourmandes</p>
+</footer>
+
+</body>
+</html>

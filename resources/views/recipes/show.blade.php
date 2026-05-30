@@ -1,230 +1,222 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $recipe->title }} — Recettes Gourmandes</title>
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    @include('recipes.partials.site-styles')
+    <style>
+        .show-wrap { max-width: 900px; margin: 0 auto; padding: 1.5rem; flex: 1; width: 100%; }
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-size: 0.88rem; font-weight: 600; color: var(--muted);
+            text-decoration: none; margin-bottom: 1.25rem;
+        }
+        .back-link:hover { color: var(--accent); }
+        .recipe-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        @media (min-width: 640px) {
+            .recipe-header { flex-direction: row; align-items: flex-start; }
+        }
+        .recipe-thumb {
+            width: 100%;
+            max-width: 280px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            flex-shrink: 0;
+        }
+        .recipe-info { flex: 1; min-width: 0; }
+        .recipe-info h1 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            margin: 0 0 0.75rem;
+            line-height: 1.25;
+        }
+        .badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+        .badge {
+            font-size: 0.72rem; font-weight: 700;
+            padding: 0.3rem 0.65rem; border-radius: 999px;
+        }
+        .badge-time { background: #fff7ed; color: var(--accent); }
+        .badge-date { background: #f5f5f4; color: var(--muted); }
+        .badge-cat { background: #ecfdf5; color: #059669; }
+        .chef-box {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem; background: var(--card);
+            border-radius: 0.75rem; border: 1px solid #e7e5e4;
+            margin-bottom: 1rem;
+        }
+        .chef-avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: linear-gradient(135deg, #fb923c, #ec4899);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 800; overflow: hidden;
+        }
+        .chef-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .owner-actions {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .owner-actions .btn { border-radius: 0.75rem; }
+        .content-grid {
+            display: grid;
+            gap: 1.25rem;
+        }
+        @media (min-width: 768px) {
+            .content-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .panel {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid #e7e5e4;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .panel-head {
+            padding: 0.85rem 1.15rem;
+            font-weight: 800;
+            font-size: 1rem;
+            border-bottom: 1px solid #e7e5e4;
+        }
+        .panel-head.orange { background: #fff7ed; color: var(--accent-dark); }
+        .panel-head.green { background: #ecfdf5; color: #059669; }
+        .panel-body { padding: 1rem 1.15rem; }
+        .panel-body ul { margin: 0; padding: 0; list-style: none; }
+        .panel-body li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f5f5f4;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #44403c;
+        }
+        .panel-body li:last-child { border-bottom: none; }
+        .step-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.5rem; height: 1.5rem; border-radius: 50%;
+            background: #22c55e; color: #fff;
+            font-size: 0.75rem; font-weight: 800; margin-right: 0.5rem;
+        }
+        footer {
+            background: var(--dark); color: #a8a29e;
+            text-align: center; padding: 1.5rem; font-size: 0.85rem; margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
 
-@section('title', $recipe->title)
+@php
+    $chef = $recipe->user;
+    $chefPhoto = $chef && $chef->profile_photo_path
+        ? asset('storage/' . $chef->profile_photo_path) : null;
+    $chefInitial = $chef ? strtoupper(mb_substr($chef->name, 0, 1, 'UTF-8')) : '?';
+    $categoryFallbacks = [
+        'Desserts' => 'desserts.jpg',
+        'Entrées & Salades' => 'entrees.jpg',
+        'Plats principaux' => 'plats.jpg',
+        'Cuisine algérienne' => 'plats.jpg',
+        'Cuisine française' => 'plats.jpg',
+    ];
+    $fallbackKey = $categoryFallbacks[$recipe->category] ?? 'plats.jpg';
+    $recipeImage = $recipe->image
+        ? asset('storage/' . $recipe->image)
+        : asset('images/' . $fallbackKey);
+    $totalMinutes = ($recipe->prep_time ?? 0) + ($recipe->cook_time ?? 0);
+    $ingredientsList = array_filter(array_map('trim', explode("\n", $recipe->ingredients)));
+    $steps = array_filter(array_map('trim', explode("\n", $recipe->instructions)));
+@endphp
 
-@section('content')
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/40 to-pink-50/40">
-    <!-- Hero Header with Enhanced Gradient -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-orange-500 via-red-500 to-pink-500">
-        <!-- Animated Background Elements -->
-        <div class="absolute inset-0 opacity-20">
-            <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 0.5s;"></div>
-        </div>
-        
-        <!-- Pattern Overlay -->
-        <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
-        
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            @php
-                $chef = $recipe->user;
-                $chefPhoto = $chef && $chef->profile_photo_path
-                    ? asset('storage/' . $chef->profile_photo_path)
-                    : null;
-                $chefInitial = $chef ? strtoupper(mb_substr($chef->name, 0, 1, 'UTF-8')) : '?';
-            @endphp
-            <!-- Navigation -->
-            <div class="flex items-center justify-end mb-10">
-                @if($recipe->user_id === Auth::id())
-                <div class="flex gap-4">
-                    <a href="{{ route('recipes.edit', $recipe) }}" 
-                       class="group inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-2xl hover:bg-green-600 transition-all duration-300 font-black shadow-2xl hover:shadow-3xl hover:scale-110 border-2 border-green-400">
-                        <svg class="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                        Modifier
-                    </a>
-                    <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" 
-                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette recette?')" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" 
-                                class="group inline-flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition-all duration-300 font-black shadow-2xl hover:shadow-3xl hover:scale-110 border-2 border-red-400">
-                            <svg class="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            Supprimer
-                        </button>
-                    </form>
-                </div>
+@include('recipes.partials.site-header')
+
+<div class="show-wrap">
+    <a href="{{ route('recipes.index') }}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Retour aux recettes
+    </a>
+
+    <div class="recipe-header">
+        <img src="{{ $recipeImage }}" alt="{{ $recipe->title }}" class="recipe-thumb">
+        <div class="recipe-info">
+            <h1>{{ $recipe->title }}</h1>
+            <div class="badges">
+                @if($recipe->category)
+                    <span class="badge badge-cat">{{ $recipe->category }}</span>
+                @endif
+                <span class="badge badge-time">⏱ {{ $totalMinutes }} min</span>
+                <span class="badge badge-date">{{ $recipe->created_at->format('d/m/Y') }}</span>
+                @if($recipe->difficulty)
+                    <span class="badge badge-date">{{ $recipe->difficulty }}</span>
                 @endif
             </div>
-
-            <!-- Title Section -->
-            <div class="text-white">
-                <div class="relative mb-10">
-                    <!-- Chef Card - Positioned Absolute Right -->
-                    <div class="absolute top-0 right-0 hidden lg:block">
-                        <div class="group bg-white rounded-3xl shadow-2xl p-8 border-2 border-white/30 hover:border-white/50 hover:shadow-3xl transition-all duration-500 w-[350px]">
-                            <div class="text-center mb-6">
-                                <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-orange-100 to-red-100 rounded-full mb-6 shadow-lg">
-                                    <span class="text-2xl">👨‍🍳</span>
-                                    <span class="font-black text-orange-600 text-sm uppercase tracking-wider">Le Chef</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col items-center mb-6">
-                                <div class="w-24 h-24 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-2xl mb-5 ring-4 ring-white/30 group-hover:ring-white/50 group-hover:scale-110 transition-all duration-500 overflow-hidden">
-                                    @if($chefPhoto)
-                                        <img src="{{ $chefPhoto }}" alt="{{ $chef->name }}" class="w-full h-full object-cover">
-                                    @else
-                                        {{ $chefInitial }}
-                                    @endif
-                                </div>
-                                <h3 class="font-black text-gray-900 text-2xl mb-2 text-center">{{ $chef ? $chef->name : 'Utilisateur inconnu' }}</h3>
-                                <p class="text-gray-600 font-bold text-sm text-center">Chef cuisinier professionnel</p>
-                            </div>
-                            <div class="pt-6 border-t-2 border-gray-200">
-                                <div class="flex items-center justify-between p-5 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 rounded-2xl border-2 border-orange-100">
-                                    <span class="text-gray-700 font-bold text-sm">Recettes publiées</span>
-                                    <span class="font-black text-orange-600 text-3xl">{{ $chef ? $chef->recipes()->count() : 0 }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Title - Centered -->
-                    <div class="text-center">
-                        <h1 class="text-5xl lg:text-7xl font-black mb-10 leading-tight drop-shadow-2xl tracking-tight">
-                            {{ $recipe->title }}
-                        </h1>
-                    </div>
-                    <!-- Chef Card - Mobile Version -->
-                    <div class="lg:hidden mt-8">
-                        <div class="group bg-white rounded-3xl shadow-2xl p-8 border-2 border-white/30 mx-auto max-w-[350px]">
-                            <div class="text-center mb-6">
-                                <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-orange-100 to-red-100 rounded-full mb-6 shadow-lg">
-                                    <span class="text-2xl">👨‍🍳</span>
-                                    <span class="font-black text-orange-600 text-sm uppercase tracking-wider">Le Chef</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col items-center mb-6">
-                                <div class="w-24 h-24 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-2xl mb-5 ring-4 ring-white/30 group-hover:ring-white/50 group-hover:scale-110 transition-all duration-500 overflow-hidden">
-                                    @if($chefPhoto)
-                                        <img src="{{ $chefPhoto }}" alt="{{ $chef->name }}" class="w-full h-full object-cover">
-                                    @else
-                                        {{ $chefInitial }}
-                                    @endif
-                                </div>
-                                <h3 class="font-black text-gray-900 text-2xl mb-2 text-center">{{ $chef ? $chef->name : 'Utilisateur inconnu' }}</h3>
-                                <p class="text-gray-600 font-bold text-sm text-center">Chef cuisinier professionnel</p>
-                            </div>
-                            <div class="pt-6 border-t-2 border-gray-200">
-                                <div class="flex items-center justify-between p-5 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 rounded-2xl border-2 border-orange-100">
-                                    <span class="text-gray-700 font-bold text-sm">Recettes publiées</span>
-                                    <span class="font-black text-orange-600 text-3xl">{{ $chef ? $chef->recipes()->count() : 0 }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="chef-box">
+                <div class="chef-avatar">
+                    @if($chefPhoto)
+                        <img src="{{ $chefPhoto }}" alt="{{ $chef->name }}">
+                    @else
+                        {{ $chefInitial }}
+                    @endif
                 </div>
-                    <div class="flex flex-wrap items-center justify-center gap-5">
-                    <div class="flex items-center gap-4 px-6 py-4 bg-white/25 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 hover:bg-white/35 transition-all duration-300">
-                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-orange-600 font-black text-2xl shadow-2xl ring-4 ring-white/30 overflow-hidden">
-                            @if($chefPhoto)
-                                <img src="{{ $chefPhoto }}" alt="{{ $chef->name }}" class="w-full h-full object-cover">
-                            @else
-                                {{ $chefInitial }}
-                            @endif
-                        </div>
-                        <div>
-                            <p class="font-bold text-lg leading-tight">{{ $chef ? $chef->name : 'Utilisateur inconnu' }}</p>
-                            <p class="text-white/80 text-sm font-medium">Chef</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 px-6 py-4 bg-white/25 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 hover:bg-white/35 transition-all duration-300">
-                        <div class="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-black text-2xl">{{ $recipe->cooking_time }}</p>
-                            <p class="text-white/80 text-xs font-medium uppercase tracking-wide">minutes</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 px-6 py-4 bg-white/25 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 hover:bg-white/35 transition-all duration-300">
-                        <div class="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-black text-xl">{{ $recipe->created_at->format('d/m/Y') }}</p>
-                            <p class="text-white/80 text-xs font-medium">Publié le</p>
-                        </div>
-                    </div>
+                <div>
+                    <div style="font-size:0.75rem;color:var(--muted);font-weight:600;">Par</div>
+                    <div style="font-weight:800;">{{ $chef ? $chef->name : 'Utilisateur inconnu' }}</div>
                 </div>
             </div>
+            @auth
+            <div class="owner-actions">
+                <a href="{{ route('recipes.edit', $recipe) }}" class="btn btn-edit">
+                    <i class="fas fa-pen"></i> Modifier
+                </a>
+                <form method="POST" action="{{ route('recipes.destroy', $recipe) }}"
+                      onsubmit="return confirm('Supprimer cette recette ?');" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+            @else
+            <p style="font-size:0.88rem;color:var(--muted);margin:0;">
+                <a href="{{ route('login') }}" style="color:var(--accent);font-weight:700;">Connectez-vous</a>
+                pour modifier les recettes.
+            </p>
+            @endauth
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-12">
-        <div class="space-y-10">
-                <!-- Ingredients Card -->
-                <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-orange-200 hover:border-orange-400 transition-all duration-500">
-                    <div class="relative bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 p-10 overflow-hidden">
-                        <!-- Animated Background -->
-                        <div class="absolute inset-0 opacity-30">
-                            <div class="absolute top-0 right-0 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse"></div>
-                            <div class="absolute bottom-0 left-0 w-56 h-56 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 0.7s;"></div>
-                        </div>
-                        <!-- Pattern -->
-                        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 3px 3px, white 2px, transparent 0); background-size: 30px 30px;"></div>
-                        
-                        <div class="relative flex items-center gap-5">
-                            <div class="w-20 h-20 bg-white/25 backdrop-blur-lg rounded-3xl flex items-center justify-center shadow-2xl ring-4 ring-white/20">
-                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                </svg>
-                            </div>
-                            <h2 class="text-4xl font-black text-white drop-shadow-lg">Ingrédients</h2>
-                        </div>
-                    </div>
-                    <div class="p-10 bg-gradient-to-br from-orange-50/50 to-red-50/50">
-                        <div class="grid sm:grid-cols-2 gap-5">
-                            @foreach(explode("\n", $recipe->ingredients) as $ingredient)
-                                @if(trim($ingredient))
-                                <div class="group flex items-center gap-4 p-5 bg-white rounded-2xl border-2 border-orange-100 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:rotate-180 transition-transform duration-500 ring-2 ring-orange-200">
-                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-gray-800 font-bold text-lg flex-1">{{ trim($ingredient, '- ') }}</span>
-                                </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Instructions Card -->
-                <div class="bg-white rounded-3xl shadow-2xl p-10 border-2 border-green-200 hover:border-green-400 transition-all duration-500">
-                    <div class="flex items-center gap-5 mb-10 pb-8 border-b-2 border-green-100">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 via-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-green-100">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                        </div>
-                        <h2 class="text-4xl font-black text-gray-900">Instructions</h2>
-                    </div>
-                    <div class="space-y-6">
-                        @php
-                            $steps = array_filter(array_map('trim', explode("\n", $recipe->instructions)));
-                            $stepNumber = 1;
-                        @endphp
-                        @foreach($steps as $step)
-                            <div class="group flex gap-6 p-7 bg-gradient-to-r from-green-50 via-teal-50 to-emerald-50 rounded-2xl border-2 border-green-100 hover:border-green-300 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
-                                <div class="w-16 h-16 bg-gradient-to-br from-green-500 via-teal-500 to-emerald-600 text-white rounded-2xl flex items-center justify-center font-black text-2xl flex-shrink-0 shadow-xl group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 ring-4 ring-green-100">
-                                    {{ $stepNumber++ }}
-                                </div>
-                                <p class="text-gray-800 font-bold text-lg leading-relaxed pt-3 flex-1">{{ $step }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-        </div>
+    <div class="content-grid">
+        <section class="panel">
+            <div class="panel-head orange">🥗 Ingrédients ({{ count($ingredientsList) }})</div>
+            <div class="panel-body">
+                <ul>
+                    @foreach($ingredientsList as $ingredient)
+                    <li>• {{ trim($ingredient, '- ') }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+        <section class="panel">
+            <div class="panel-head green">👨‍🍳 Instructions ({{ count($steps) }})</div>
+            <div class="panel-body">
+                <ul>
+                    @foreach($steps as $index => $step)
+                    <li>
+                        <span class="step-num">{{ $index + 1 }}</span>
+                        {{ $step }}
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
     </div>
 </div>
-@endsection
+
+<footer>© {{ date('Y') }} Recettes Gourmandes</footer>
+
+</body>
+</html>

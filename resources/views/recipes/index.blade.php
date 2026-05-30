@@ -4,463 +4,908 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recettes Gourmandes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
-            --bg: #fdf9f5;
-            --accent: #c8102e;
-            --dark: #1e1e1e;
-            --gray: #5c5c5c;
-            --shadow: 0 12px 36px rgba(0,0,0,0.09);
+            --bg: #faf8f5;
+            --accent: #f97316;
+            --accent-dark: #ea580c;
+            --dark: #1c1917;
+            --muted: #78716c;
+            --card: #ffffff;
+            --radius: 1.5rem;
+            --shadow: 0 4px 24px rgba(28, 25, 23, 0.06);
+            --shadow-hover: 0 16px 40px rgba(249, 115, 22, 0.12);
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            background:
-                radial-gradient(circle at top left, #ffe1bb 0, transparent 55%),
-                radial-gradient(circle at bottom right, #ffd6df 0, transparent 55%),
-                var(--bg);
+            margin: 0;
+            background: var(--bg);
             color: var(--dark);
-            font-family: 'Roboto', system-ui, sans-serif;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
 
-        main { flex: 1; }
+        a { color: inherit; }
 
-        h1, .card-title {
-            font-family: 'Playfair Display', serif;
+        /* ── Header ── */
+        .site-header {
+            background: var(--card);
+            border-bottom: 1px solid #e7e5e4;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
 
-        .container-main { max-width: 1450px; }
-
-        .header { margin-bottom: 4.5rem; }
-
-        h1 {
-            font-size: 3.4rem;
-            font-weight: 800;
-            letter-spacing: -1.5px;
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
-        .page-subtitle {
-            max-width: 560px;
-            margin: 0 auto 2rem;
-            color: var(--gray);
-        }
-
-        .btn-add {
-            background-color: var(--accent);
-            border: none;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            font-weight: 600;
+        .logo {
             font-size: 1.15rem;
-            transition: all 0.35s ease;
+            font-weight: 800;
+            color: var(--dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .btn-add:hover {
-            background-color: #a50d22;
-            transform: translateY(-5px);
-            box-shadow: 0 14px 32px rgba(200,16,46,0.32);
+        .logo span { color: var(--accent); }
+
+        .header-nav {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid #fed7aa;
+            background: #fff7ed;
+            color: var(--accent-dark);
+            transition: all 0.2s ease;
+        }
+
+        .header-nav a:hover {
+            color: #fff;
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .header-nav a.nav-active {
+            color: #fff;
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .auth-btns {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1.1rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--muted);
+            border: 1.5px solid #d6d3d1;
+        }
+
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+        }
+
+        .btn-green {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-green:hover { background: #16a34a; }
+
+        .user-greeting { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+
+        .guest-banner {
+            background: #fff7ed;
+            border-bottom: 1px solid #fed7aa;
+            padding: 0.65rem 1.5rem;
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+        .guest-banner a { color: var(--accent); font-weight: 700; }
+
+        .fab-wrap {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 60;
+            width: 4.25rem;
+            height: 4.25rem;
+        }
+
+        .fab-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(34, 197, 94, 0.55);
+            animation: fab-orbit 2.5s ease-in-out infinite;
+        }
+
+        .fab-add {
+            position: absolute;
+            inset: 0.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            height: auto;
+            padding: 0;
+            background: linear-gradient(145deg, #22c55e, #16a34a);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.35rem;
+            border-radius: 50%;
+            text-decoration: none;
+            box-shadow: 0 6px 22px rgba(34, 197, 94, 0.45);
+            border: 2px solid #fff;
+        }
+
+        .fab-add:hover {
+            background: linear-gradient(145deg, #16a34a, #15803d);
+            transform: scale(1.08);
+        }
+
+        .fab-add .fab-label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @keyframes fab-orbit {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.12); opacity: 0.35; }
+        }
+
+        /* ── Hero ── */
+        .hero {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 1.5rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin: 0 0 0.5rem;
+            line-height: 1.15;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            margin: 0 auto 1.25rem;
+            max-width: 480px;
+        }
+
+        .search-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem 1.75rem;
+        }
+
+        .search-bar {
+            max-width: 640px;
+            margin: 0 auto;
+            display: flex;
+            background: var(--card);
+            border-radius: 999px;
+            padding: 0.45rem;
+            box-shadow: var(--shadow);
+            border: 2px solid #e7e5e4;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.95rem 1.35rem;
+            font-size: 1.05rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .search-bar button {
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 700;
+            padding: 0.95rem 1.75rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .search-bar button:hover { background: var(--accent-dark); }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .chip {
+            padding: 0.55rem 1.15rem;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            background: var(--card);
+            color: var(--muted);
+            border: 2px solid #e7e5e4;
+            transition: all 0.2s;
+        }
+
+        .chip:hover, .chip.active {
+            background: #fff7ed;
+            color: var(--accent);
+            border-color: #fed7aa;
+        }
+
+        /* ── Main ── */
+        main {
+            flex: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+            width: 100%;
+        }
+
+        .section-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .section-top h2 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .recipe-count {
+            font-size: 1rem;
+            color: var(--muted);
+            font-weight: 600;
         }
 
         .recipe-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2.2rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
 
         @media (min-width: 1200px) {
-            .recipe-grid {
-                grid-template-columns: repeat(4, 1fr); /* ← 4 colonnes sur grand écran */
-            }
+            .recipe-grid { grid-template-columns: repeat(4, 1fr); }
         }
 
         .recipe-card {
-            background: white;
-            border-radius: 22px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.42s cubic-bezier(0.165, 0.84, 0.44, 1);
-            border: 1px solid rgba(0,0,0,0.03);
             position: relative;
-            backdrop-filter: blur(5px);
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: visible;
+            border: 2px solid #e7e5e4;
+            box-shadow: var(--shadow);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .recipe-card:hover {
-            transform: translateY(-16px) scale(1.015);
-            box-shadow: 0 32px 68px rgba(0,0,0,0.16);
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-img-link {
+            display: block;
+            position: relative;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            border-radius: var(--radius) var(--radius) 0 0;
         }
 
         .recipe-img {
-            height: 260px;
-            object-fit: cover;
             width: 100%;
-            transition: transform 0.9s ease;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
         }
 
-        .recipe-card:hover .recipe-img {
-            transform: scale(1.14);
+        .recipe-card:hover .recipe-img { transform: scale(1.06); }
+
+        .card-body {
+            padding: 1.35rem 1.5rem 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-radius: 0 0 var(--radius) var(--radius);
+            background: var(--card);
         }
 
-        .card-body { padding: 1.8rem 2rem 1.6rem; }
+        .card-meta-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .card-category {
+            background: #fff7ed;
+            color: var(--accent);
+            font-size: 0.88rem;
+            font-weight: 800;
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            border: 2px solid #fed7aa;
+        }
+
+        .card-time {
+            background: #f5f5f4;
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            border: 1px solid #e7e5e4;
+        }
+
+        .card-toolbar-outside {
+            position: absolute;
+            top: 0.65rem;
+            right: 0.65rem;
+            z-index: 20;
+            display: flex;
+            gap: 0.55rem;
+        }
+
+        .tb-btn {
+            width: 3.25rem;
+            height: 3.25rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #fff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+            text-decoration: none;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tb-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+        }
+        .tb-edit { background: #3b82f6; color: #fff; }
+        .tb-delete { background: #e11d48; color: #fff; }
 
         .card-title {
-            font-size: 1.55rem;
-            margin-bottom: 1rem;
-            line-height: 1.3;
+            font-size: 1.28rem;
+            font-weight: 800;
+            margin: 0 0 0.55rem;
+            line-height: 1.35;
+        }
+
+        .card-title a {
+            text-decoration: none;
+            color: var(--dark);
+            transition: color 0.2s;
+        }
+
+        .card-title a:hover { color: var(--accent); }
+
+        .card-author {
+            font-size: 0.95rem;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
         }
 
         .meta-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.45rem;
-            margin-bottom: 1rem;
-            font-size: 0.82rem;
+            gap: 0.35rem;
+            margin-bottom: 0.85rem;
         }
 
         .meta-pill {
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
             border-radius: 999px;
-            padding: 0.25rem 0.75rem;
-            background: rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            color: var(--gray);
+            background: #fafaf9;
+            color: var(--muted);
+            border: 1px solid #e7e5e4;
         }
 
-        .meta-pill i {
-            font-size: 0.8rem;
-        }
+        .meta-pill.diff-easy { background: #ecfdf5; color: #059669; border-color: #a7f3d0; }
+        .meta-pill.diff-med { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+        .meta-pill.diff-hard { background: #fff1f2; color: #e11d48; border-color: #fecdd3; }
 
         .ingredients-preview {
             font-size: 1rem;
             line-height: 1.6;
-            color: var(--gray);
+            color: var(--muted);
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-bottom: 1.4rem;
+            margin-bottom: 1rem;
+            flex: 1;
         }
 
-        .action-btn {
-            border-radius: 12px;
-            padding: 0.7rem 1.2rem;
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--muted);
+        }
+
+        .empty-state i { font-size: 3rem; opacity: 0.35; margin-bottom: 1rem; display: block; }
+
+        .pagination-wrap {
+            margin-top: 2.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .btn-view {
+            justify-content: center;
+            padding: 0.8rem 1.1rem;
+            border-radius: 0.85rem;
+            font-weight: 700;
             font-size: 0.95rem;
-            transition: all 0.3s;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
         }
 
-        .action-btn:hover { transform: translateY(-3px); }
+        .btn-view:hover { background: var(--accent-dark); }
 
-        /* Footer */
-        .footer-social {
-            background: linear-gradient(90deg, #ff7043, #ff3d7f);
-            color: white;
-            padding: 3.5rem 0 2.5rem;
+        /* ── Catégories ── */
+        .categories-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem 2rem;
+        }
+
+        .categories-section h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0 0 0.35rem;
+        }
+
+        .categories-section > p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            margin: 0 0 1.35rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1.5rem 1rem;
+            justify-items: center;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 520px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem 1rem;
+                max-width: 100%;
+            }
+        }
+
+        .cat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            max-width: 190px;
+            width: 100%;
+        }
+
+        .cat-circle {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #fff;
+            outline: 3px solid #fed7aa;
+            box-shadow: 0 8px 24px rgba(28, 25, 23, 0.12);
+            transition: transform 0.3s ease, outline-color 0.3s ease;
+        }
+
+        .cat-card:hover .cat-circle {
+            transform: scale(1.06);
+            outline-color: var(--accent);
+        }
+
+        .cat-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .cat-label {
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--dark);
+            color: #a8a29e;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            font-size: 0.85rem;
             margin-top: auto;
         }
 
-        .social-links a {
-            color: white;
-            font-size: 2rem;
-            margin: 0 1.2rem;
-            transition: all 0.35s;
-        }
+        footer .social { margin-bottom: 0.75rem; }
 
-        .social-links a:hover {
-            color: var(--accent);
-            transform: translateY(-6px);
-        }
-
-        /* Hero arabe علوي */
-        .hero {
-            background: linear-gradient(90deg, #ff7043, #ff3d7f);
+        footer .social a {
             color: #fff;
-            padding: 1.2rem 0 3.5rem;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+            font-size: 1.25rem;
+            margin: 0 0.6rem;
+            opacity: 0.7;
+            transition: opacity 0.2s, color 0.2s;
         }
 
-        .hero-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
+        footer .social a:hover { opacity: 1; color: var(--accent); }
 
-        .hero-nav {
-            display: flex;
+        .pagination-wrap nav { width: 100%; }
+        .pagination-wrap nav > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem; align-items: center; }
+        .pagination-wrap a,
+        .pagination-wrap span {
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .hero-logo {
-            font-family: 'Playfair Display', serif;
-            font-weight: 800;
-            font-size: 1.6rem;
-            letter-spacing: .03em;
-        }
-
-        .hero-menu {
-            display: flex;
-            gap: 1.5rem;
-            font-size: 0.98rem;
-        }
-
-        .hero-menu a {
-            color: #ffedf3;
+            justify-content: center;
+            min-width: 2.25rem;
+            padding: 0.45rem 0.75rem;
+            border-radius: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 700;
             text-decoration: none;
-            font-weight: 500;
+            border: 1px solid #e7e5e4;
+            background: var(--card);
+            color: var(--dark);
         }
-
-        .hero-menu a:hover {
-            color: #ffffff;
-            text-decoration: underline;
+        .pagination-wrap span[aria-current="page"] {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
         }
+        .pagination-wrap a:hover { border-color: var(--accent); color: var(--accent); }
 
-        .hero-auth {
-            display: flex;
-            gap: .75rem;
-        }
+.chef-title{
+    font-size: 40px;
+    font-style: italic;
+    font-weight: 900;
+    color: white;
+    text-align: center;
 
-        .hero-auth .btn-outline-light {
-            border-radius: 999px;
-            padding-inline: 1.4rem;
-            font-size: 0.9rem;
-        }
+    text-shadow:
+        0 0 8px #fff,
+        0 0 15px #ff9800,
+        0 0 30px #ff5722,
+        0 0 45px #ff5722;
 
-        .hero-auth .btn-light {
-            border-radius: 999px;
-            padding-inline: 1.4rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #ff3d7f;
-        }
+    animation: shine 2s infinite alternate;
+}
 
-        .hero-content {
-            text-align: center;
-        }
+@keyframes shine{
+    from{
+        text-shadow:
+            0 0 8px #fff,
+            0 0 15px #ff9800;
+    }
 
-        .hero-title {
-            font-family: 'Playfair Display', serif;
-            font-weight: 800;
-            font-size: 2.6rem;
-            margin-bottom: .75rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1.02rem;
-            opacity: .9;
-            margin-bottom: 1.8rem;
-        }
-
-        .hero-search {
-            max-width: 680px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            padding: .35rem;
-            backdrop-filter: blur(10px);
-        }
-
-        .hero-search form {
-            display: flex;
-            gap: .5rem;
-            align-items: stretch;
-        }
-
-        .hero-search input[type="text"] {
-            flex: 1;
-            border: none;
-            border-radius: 999px;
-            padding: .85rem 1.2rem;
-            font-size: .98rem;
-        }
-
-        .hero-search input[type="text"]:focus {
-            outline: none;
-        }
-
-        .hero-search button {
-            border-radius: 999px;
-            padding-inline: 1.6rem;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .hero-nav {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .hero-menu {
-                flex-wrap: wrap;
-            }
-
-            .hero {
-                padding-bottom: 2.5rem;
-            }
-        }
-    </style>
+    to{
+        text-shadow:
+            0 0 15px #fff,
+            0 0 30px #ff9800,
+            0 0 45px #ff5722,
+            0 0 60px #ff5722;
+    }
+}
+</style>
 </head>
 <body>
+
+@php
+    $categoryFallbacks = [
+        'Desserts' => 'desserts.jpg',
+        'Entrées & Salades' => 'entrees.jpg',
+        'Plats principaux' => 'plats.jpg',
+        'Cuisine algérienne' => 'plats.jpg',
+        'Cuisine française' => 'plats.jpg',
+        'Soupes' => 'entrees.jpg',
+        'Autres' => 'plats.jpg',
+    ];
+    $filterCategories = [
+        'all' => 'Toutes',
+        'Desserts' => 'Desserts',
+        'Cuisine algérienne' => 'Cuisine algérienne',
+        'Entrées & Salades' => 'Entrées & Salades',
+        'Plats principaux' => 'Plats',
+        'Soupes' => 'Soupes',
+    ];
+@endphp
+
+@include('recipes.partials.site-header')
+
 <section class="hero">
-    <div class="hero-inner">
-        <div class="hero-nav">
-            <div class="hero-logo">
-                Les recettes
-            </div>
-            <nav class="hero-menu">
-                <a href="/">Accueil</a>
-                <a href="#categories">Catégories</a>
-                <a href="#about">À propos</a>
-            </nav>
-            <div class="hero-auth">
-                @auth
-                    <span class="text-light me-2 d-none d-sm-inline">
-                        Bonjour, {{ Auth::user()->name ?? 'chef' }}
-                    </span>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-sm btn-outline-light">
-                            Se déconnecter
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-light">Connexion</a>
-                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Créer un compte</a>
-                @endauth
-            </div>
-        </div>
+    <h1>Découvrez les meilleures recettes</h1>
+    <p>Découvrez les meilleures recettes — faites un mouvement</p>
 
-        <div class="hero-content">
-            <h2 class="hero-title">Découvrez les meilleures recettes</h2>
-            <p class="hero-subtitle">Des milliers d’idées gourmandes venues du monde entier, à portée de clic.</p>
-
-            <div class="hero-search">
-                <form action="/recipes" method="GET">
-                    <input type="text" name="search" placeholder="Rechercher une recette..." value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-dark">
-                        Rechercher
-                    </button>
-                </form>
-            </div>
-        </div>
+    <div class="filter-chips">
+        @foreach($filterCategories as $value => $label)
+            @php
+                $chipParams = request('search') ? ['search' => request('search')] : [];
+                if ($value !== 'all') {
+                    $chipParams['category'] = $value;
+                }
+                $isActive = $value === 'all'
+                    ? !request()->filled('category')
+                    : request('category') === $value;
+            @endphp
+            <a href="{{ route('recipes.index', $chipParams) }}"
+               class="chip {{ $isActive ? 'active' : '' }}">
+                {{ $label }}
+            </a>
+        @endforeach
     </div>
 </section>
 
+<section id="categories" class="categories-section">
+    <h2>Catégories</h2>
+    <p class="chef-title">Choisir un plat</p>
+    <div class="categories-grid">
+        <a href="{{ route('recipes.index', ['category' => 'Cuisine algérienne']) }}" class="cat-card">
+            <div class="cat-circle">
+                <img src="{{ asset('images/entrees.jpg') }}" alt="">
+            </div>
+            <span class="cat-label">Cuisine algérienne</span>
+        </a>
+        <a href="{{ route('recipes.index', ['category' => 'Plats principaux']) }}" class="cat-card">
+            <div class="cat-circle">
+                <img src="https://images.unsplash.com/photo-1583394293214-28ded15ee548?auto=format&fit=crop&w=600&q=80" alt="Chef Lina">
+            </div>
+            <span class="cat-label">Plats principaux</span>
+        </a>
+        <a href="{{ route('recipes.index', ['category' => 'Desserts']) }}" class="cat-card">
+            <div class="cat-circle">
+                <img src="https://images.unsplash.com/photo-1592861956120-e524fc739696?auto=format&fit=crop&w=600&q=80" alt="chef Amina">
+            </div>
+            <span class="cat-label">Desserts</span>
+        </a>
+        <a href="{{ route('recipes.index', ['category' => 'Entrées & Salades']) }}" class="cat-card">
+            <div class="cat-circle">
+                <img src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?auto=format&fit=crop&w=600&q=80" alt="Chef Yasmine">
+            </div>
+            <span class="cat-label">Entrées &amp; Salades</span>
+        </a>
+    </div>
+</section>
+
+<section class="search-section">
+    <form class="search-bar" action="{{ route('recipes.index') }}" method="GET">
+        @if(request('category') && request('category') !== 'all')
+            <input type="hidden" name="category" value="{{ request('category') }}">
+        @endif
+        <input type="text" name="search" placeholder="Rechercher une recette…" value="{{ request('search') }}">
+        <button type="submit">Rechercher</button>
+    </form>
+</section>
+
 <main>
-    <div class="container container-main py-5">
-        <div class="header text-center mb-5">
-            <h1 class="mb-4">Recettes Gourmandes</h1>
-            <p class="page-subtitle">
-                Découvrez, créez et partagez vos meilleures idées de cuisine dans une ambiance chaleureuse et élégante.
-            </p>
+    <div class="section-top">
+        <h2>
+            @if(request('search'))
+                Résultats pour « {{ request('search') }} »
+            @elseif(request('category') && request('category') !== 'all')
+                {{ $filterCategories[request('category')] ?? request('category') }}
+            @else
+                Toutes les recettes
+            @endif
+        </h2>
+        <span class="recipe-count">{{ $recipes->total() }} recette{{ $recipes->total() > 1 ? 's' : '' }}</span>
+    </div>
 
-            @auth
-                <a href="{{ route('recipes.create') }}" class="btn btn-add text-white shadow">
-                    <i class="fas fa-plus me-2"></i> Ajouter une recette
+    <div class="recipe-grid">
+        @forelse ($recipes as $recipe)
+            @php
+                $fallback = $categoryFallbacks[$recipe->category] ?? 'plats.jpg';
+                $recipeImage = $recipe->image
+                    ? asset('storage/' . $recipe->image)
+                    : asset('images/' . $fallback);
+                $totalMinutes = ($recipe->prep_time ?? 0) + ($recipe->cook_time ?? 0);
+                $diffClass = match($recipe->difficulty) {
+                    'سهل' => 'diff-easy',
+                    'متوسط' => 'diff-med',
+                    'صعب' => 'diff-hard',
+                    default => '',
+                };
+            @endphp
+            <article class="recipe-card">
+                @auth
+                <div class="card-toolbar-outside">
+                    <a href="{{ route('recipes.edit', $recipe) }}" class="tb-btn tb-edit" title="Modifier">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                    <form action="{{ route('recipes.destroy', $recipe) }}" method="POST"
+                          onsubmit="return confirm('Supprimer cette recette ?');" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="tb-btn tb-delete" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+                @endauth
+
+                <a href="{{ route('recipes.show', $recipe) }}" class="card-img-link">
+                    <img src="{{ $recipeImage }}" class="recipe-img" alt="{{ $recipe->title }}">
                 </a>
-            @endauth
-        </div>
 
-        <div class="recipe-grid">
-            @forelse ($recipes as $recipe)
-                <div class="recipe-card">
-                    @if($recipe->image)
-                        <img src="{{ asset('storage/'.$recipe->image) }}" class="recipe-img" alt="{{ $recipe->title }}">
-                    @else
-                        <div class="recipe-img d-flex align-items-center justify-content-center bg-light">
-                            <i class="fas fa-utensils fa-5x text-muted opacity-40"></i>
-                        </div>
+                <div class="card-body">
+                    <div class="card-meta-top">
+                        @if($recipe->category)
+                            <span class="card-category">{{ $recipe->category }}</span>
+                        @endif
+                        @if($totalMinutes > 0)
+                            <span class="card-time">⏱ {{ $totalMinutes }} min</span>
+                        @endif
+                    </div>
+
+                    <h3 class="card-title">
+                        <a href="{{ route('recipes.show', $recipe) }}">{{ $recipe->title }}</a>
+                    </h3>
+
+                    @if($recipe->user)
+                        <p class="card-author">Par {{ $recipe->user->name }}</p>
                     @endif
 
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $recipe->title }}</h5>
+                    <div class="meta-row">
+                        @if($recipe->difficulty)
+                            <span class="meta-pill {{ $diffClass }}">{{ $recipe->difficulty }}</span>
+                        @endif
+                    </div>
 
-                        <div class="meta-row">
-                            @if(!empty($recipe->category))
-                                <span class="meta-pill">
-                                    <i class="fas fa-tag"></i>
-                                    {{ $recipe->category }}
-                                </span>
-                            @endif
+                    <p class="ingredients-preview">
+                        {{ \Illuminate\Support\Str::limit(strip_tags($recipe->ingredients), 100) }}
+                    </p>
 
-                            @if(!empty($recipe->prep_time))
-                                <span class="meta-pill">
-                                    <i class="fas fa-clock"></i>
-                                    Préparation {{ $recipe->prep_time }} min
-                                </span>
-                            @endif
-
-                            @if(!empty($recipe->cook_time))
-                                <span class="meta-pill">
-                                    <i class="fas fa-fire"></i>
-                                    Cuisson {{ $recipe->cook_time }} min
-                                </span>
-                            @endif
-
-                            @if(!empty($recipe->difficulty))
-                                <span class="meta-pill">
-                                    <i class="fas fa-signal"></i>
-                                    Difficulté : {{ $recipe->difficulty }}
-                                </span>
-                            @endif
-                        </div>
-
-                        <p class="ingredients-preview">
-                            {!! nl2br(e(\Illuminate\Support\Str::limit($recipe->ingredients, 180, '...'))) !!}
-                        </p>
-
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="/recipes/{{ $recipe->id }}" class="btn btn-outline-primary action-btn flex-fill">
-                                <i class="fas fa-eye me-2"></i> Voir
-                            </a>
-                            
-                            <a href="/recipes/{{ $recipe->id }}/edit" class="btn btn-outline-warning action-btn flex-fill">
-                                <i class="fas fa-edit me-2"></i> Modifier
-                            </a>
-                            
-                            <form action="/recipes/{{ $recipe->id }}" method="POST" class="d-inline flex-fill" 
-                                  onsubmit="return confirm('Voulez-vous vraiment supprimer cette recette définitivement ?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger action-btn w-100">
-                                    <i class="fas fa-trash-alt me-2"></i> Supprimer
-                                </button>
-                            </form>
-                        </div>
+                    <div class="card-actions">
+                        <a href="{{ route('recipes.show', $recipe) }}" class="btn-view">
+                            <i class="fas fa-eye"></i> Voir la recette
+                        </a>
                     </div>
                 </div>
-            @empty
-                <div class="col-12 text-center py-5 my-5">
-                    <i class="fas fa-book-open fa-6x text-muted mb-4 opacity-50"></i>
-                    <h3 class="text-muted mb-3">Aucune recette pour le moment...</h3>
-                    <p class="lead text-muted">Soyez le premier à partager votre recette préférée !</p>
-                </div>
-            @endforelse
-        </div>
+            </article>
+        @empty
+            <div class="empty-state">
+                <i class="fas fa-utensils"></i>
+                <h3>Aucune recette trouvée</h3>
+                <p>Essayez une autre recherche ou ajoutez la première recette !</p>
+                @auth
+                    <a href="{{ route('recipes.create') }}" class="btn btn-primary" style="margin-top:1rem;">Ajouter une recette</a>
+                @endauth
+            </div>
+        @endforelse
     </div>
+
+    @if($recipes->hasPages())
+        <div class="pagination-wrap">
+            {{ $recipes->withQueryString()->links() }}
+        </div>
+    @endif
 </main>
 
-<footer class="footer-social text-center">
-    <div class="container">
-        <h4 class="mb-4" style="font-family: 'Playfair Display', serif;">Restons connectés !</h4>
-        
-        <div class="social-links mb-4">
-            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://wa.me/213xxxxxxxxx" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            <a href="mailto:contact@recettesgourmandes.dz"><i class="fas fa-envelope"></i></a>
-        </div>
+@auth
+<div class="fab-wrap" title="Ajouter une recette">
+    <a href="{{ route('recipes.create') }}" class="fab-add" aria-label="Ajouter une recette">
+        <i class="fas fa-plus"></i>
+        <span class="fab-label">Ajouter</span>
+    </a>
+</div>
+@endauth
 
-        <p class="mb-0 opacity-75">© 2026 Recettes Gourmandes - Tous droits réservés</p>
+<footer>
+    <div class="social">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
     </div>
+    <p>© {{ date('Y') }} Recettes Gourmandes</p>
 </footer>
 
 </body>

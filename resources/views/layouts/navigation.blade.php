@@ -1,12 +1,4 @@
- <!DOCTYPE html>
-<html lang="fr" dir="ltr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Plateforme de recettes</title>
-  
-  <!-- هنا نضع الـ CSS (الطريقة  ) -->
-  <style>
+<style>
     
     .navbar-modern {
       position: relative;
@@ -174,17 +166,15 @@
     .btn-auth-primary:hover {
       background: #16a34a;
     }
-  </style>
-</head>
-<body>
+</style>
 
-  <nav class="navbar-modern">
+<nav class="navbar-modern">
     <div class="container">
       <div class="nav-content">
         <!-- Titre au centre -->
         <a href="/recipes" class="logo-title text-decoration-none">
           <h1>Plateforme de partage de recettes</h1>
-          <p class="slogan">Partagez vos meilleures recettes avec le monde 🍳✨</p>
+          <p class="slogan">Plateforme de partage de recettes</p>
         </a>
 
         <!-- Zone utilisateur + bouton d'ajout (à droite) -->
@@ -218,7 +208,4 @@
         </div>
       </div>
     </div>
-  </nav>
-  
-</body>
-</html>
+</nav>
