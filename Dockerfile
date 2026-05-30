@@ -12,8 +12,7 @@ RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-COPY .env.example .env
-RUN php artisan key:generate
+
 
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
@@ -24,6 +23,7 @@ COPY start.sh /start.sh
 RUN chmod +x /start.sh
 CMD ["/start.sh"]
 EXPOSE 80
+
 
 
 

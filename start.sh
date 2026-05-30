@@ -9,5 +9,6 @@ export APP_URL=https://recipes1-4es9.onrender.com
 export SESSION_SECURE_COOKIE=false
 php artisan config:clear
 php artisan migrate --force
+php artisan db:seed --class=RecipesSeeder 2>/dev/null || true
 php artisan import:recipes
 apache2-foreground
