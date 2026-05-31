@@ -9,5 +9,6 @@ export APP_URL=https://recipes1-4es9.onrender.com
 export SESSION_SECURE_COOKIE=false
 php artisan config:clear
 php artisan migrate --force
-php artisan import:recipes --force
+PGPASSWORD=tL1uyJI6Mz4NTE2EPvtnRD9ZSGyxyLiu psql -h dpg-d8djv8navr4c73frmhug-a -U recipes_db_4k50_user -d recipes_db_4k50 -c 'DELETE FROM recipes;'
+php artisan import:recipes
 apache2-foreground
