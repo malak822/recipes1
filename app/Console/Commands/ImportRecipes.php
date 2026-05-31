@@ -1,21 +1,17 @@
 <?php
-
 namespace App\Console\Commands;
-
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 class ImportRecipes extends Command
 {
-    protected $signature = 'import:recipes {--force}';
+    protected $signature = 'import:recipes';
     protected $description = 'Import recipes from JSON file';
 
     public function handle()
     {
         DB::statement('TRUNCATE TABLE recipes RESTART IDENTITY CASCADE');
-        
         $recipes = json_decode(file_get_contents(base_path('recipes_export.json')), true);
-        
         foreach ($recipes as $r) {
             DB::table('recipes')->insert([
                 'title' => $r['title'],
@@ -32,7 +28,6 @@ class ImportRecipes extends Command
                 'updated_at' => now(),
             ]);
         }
-        
         $this->info('Recipes imported: ' . count($recipes));
     }
 }
