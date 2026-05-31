@@ -10,7 +10,7 @@ class ImportRecipes extends Command
 
     public function handle()
     {
-        DB::statement('TRUNCATE TABLE recipes RESTART IDENTITY CASCADE');
+        DB::table('recipes')->delete();
         $recipes = json_decode(file_get_contents(base_path('recipes_export.json')), true);
         foreach ($recipes as $r) {
             DB::table('recipes')->insert([
